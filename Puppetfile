@@ -5,7 +5,7 @@ mod 'stdlib',
   :ref => 'simp-master'
 
 mod 'simplib',
-  :git => 'https://github.com/simp/puppetlabs-stdlib.git',
+  :git => 'https://github.com/simp/pupmod-simp-simplib.git',
   :ref => 'master'
 
 

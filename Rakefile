@@ -1,6 +1,5 @@
 
 
-pwd=File.dirname(__FILE__)
 
 def build_module
     # propagate relavent environment variables
@@ -30,16 +29,34 @@ def build_module
     end
 end
 
+pwd=ENV.fetch( 'FORGE_TEST_TOP_DIR', Dir.pwd)
+Dir.chdir pwd
+
 # modules-under-test
 mut_path = File.join( pwd, 'forge_modules' )
+
+# tarballs-under-test ?
+tut_path = File.join( pwd, 'forge_tarballs' )
+
+
+FileUtils.mkdir_p mut_path
 raise "ERROR: Couldn't find directory at '#{mut_path}'" unless File.directory? mut_path
 
-desc 'builds tar.gz from modules in directories'
+desc 'pulls down modules in Puppetfile to set up forge_modules'
+task :install do
+  sh 'r10k puppetfile install --verbose'
+end
+
+
+desc 'builds tar.gz from module directories'
 task :build do
+  FileUtils.mkdir_p tut_path
   Dir["#{mut_path}/[^.]*/"].each do |dir|
     Dir.chdir dir
     build_module
-    FileUtils.cp Dir['pkg/*.tar.gz'].first, File.expand_path('../forge_modules/'), :verbose => true
+    file = Dir.glob('pkg/*.tar.gz').shift
+    FileUtils.cp(file, File.expand_path("#{tut_path}/#{File.basename file}"), :verbose => true)
     Dir.chdir pwd
   end
 end
+
