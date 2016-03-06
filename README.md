@@ -15,8 +15,16 @@ puppet-forge-server --help
 mkdir modules
 wget -P modules/ forge.puppetlabs.com/system/releases/p/puppetlabs/puppetlabs-stdlib-4.10.0.tar.gz
 
+
+# Run puppet forge
+puppet-forge-server -p 8080 -m $PWD/forge_tarballs
+
+
 # test
-puppet module search s --module_repository=http://localhost:8080
+puppet module search . --module_repository=http://localhost:8080
+
+
+puppet module install simp-simplib --module_repository=http://localhost:8080 --modulepath=$PWD/_modules
 
 ```
 
